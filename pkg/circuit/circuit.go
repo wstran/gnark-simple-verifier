@@ -22,6 +22,9 @@ type SimpleVerifierCircuit struct {
 	// HandlerNCs: NC (number of columns) per handler
 	HandlerNCs [lib.MAX_HANDLERS]frontend.Variable `gnark:",public"`
 
+	// HandlerStartIndex: starting column index per handler
+	HandlerStartIndex [lib.MAX_HANDLERS]frontend.Variable `gnark:",public"`
+
 	// OpCodes: ops per handler [handler][op]
 	OpCodes [lib.MAX_HANDLERS][lib.MAX_OPS]frontend.Variable `gnark:",public"`
 
@@ -60,7 +63,7 @@ func (c *SimpleVerifierCircuit) Define(api frontend.API) error {
 	colMasks := make([][]frontend.Variable, lib.MAX_HANDLERS)
 
 	for h := 0; h < lib.MAX_HANDLERS; h++ {
-		colMasks[h] = lib.ColumnMask(api, c.HandlerNCs[h], lib.MAX_COLS)
+		colMasks[h] = lib.ColumnMaskWithStart(api, c.HandlerStartIndex[h], c.HandlerNCs[h], lib.MAX_COLS)
 	}
 
 	// Step 3: Handler mask (skip inactive handlers)

@@ -320,6 +320,8 @@ func generateTestAssignment() (*circuit.SimpleVerifierCircuit, error) {
 
 	assignment.HandlerNCs[0] = big.NewInt(int64(h0NC))
 
+	assignment.HandlerStartIndex[0] = big.NewInt(0) // Start from column 0
+
 	assignment.OpCodes[0][0] = big.NewInt(lib.OP_MERKLE16)
 
 	assignment.OpCodes[0][1] = big.NewInt(lib.OP_COUNT)
@@ -347,6 +349,8 @@ func generateTestAssignment() (*circuit.SimpleVerifierCircuit, error) {
 	assignment.Results[0][3] = big.NewInt(0)
 
 	assignment.HandlerNCs[1] = big.NewInt(int64(h1NC))
+
+	assignment.HandlerStartIndex[1] = big.NewInt(0) // Start from column 0
 
 	assignment.OpCodes[1][0] = big.NewInt(lib.OP_SUM_COL)
 
@@ -392,6 +396,8 @@ func generateTestAssignment() (*circuit.SimpleVerifierCircuit, error) {
 
 	for h := 2; h < lib.MAX_HANDLERS; h++ {
 		assignment.HandlerNCs[h] = big.NewInt(1)
+
+		assignment.HandlerStartIndex[h] = big.NewInt(0)
 
 		for op := 0; op < lib.MAX_OPS; op++ {
 			assignment.OpCodes[h][op] = big.NewInt(lib.OP_NOOP)

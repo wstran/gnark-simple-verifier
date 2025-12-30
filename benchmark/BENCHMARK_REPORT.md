@@ -1,7 +1,7 @@
 # 📊 Simple Verifier - Gnark Benchmark
 
 > **Generated:** 2025-12-30
-> **Hash:** Poseidon2 (BN254 workaround)
+> **Hash:** Poseidon2 (BN254)
 
 ## Configuration
 
@@ -17,19 +17,8 @@
 
 | Metric | Value |
 |:---|:---|
-| **Constraints** | 4799224 |
-| **Compile** | 7.837074583s |
-| **Witness** | 1.006208ms |
-| **Setup** | 2m40.053871459s |
-| **Proof** | 11.456452041s |
-
-## Comparison with Circom
-
-| Implementation | Hash | Constraints | Ratio |
-|:---|:---|:---|:---|
-| Circom | Poseidon | 2,075,944 | 1.0x |
-| Gnark (Poseidon2) | Poseidon2 | 4799224 | 2.31x |
-
-## Note
-
-gnark v0.14.0 bug workaround: using NewPoseidon2FromParameters directly.
+| **Constraints** | 4800184 |
+| **Compile** | 7.710164708s |
+| **Witness** | 1.147083ms |
+| **Setup** | 2m33.650551292s |
+| **Proof** | 11.019105375s |

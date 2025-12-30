@@ -79,9 +79,8 @@ This implementation uses **Poseidon2** with a workaround for BN254 support in gn
 
 | Metric | Value |
 |:---|:---|
-| **Constraints** | ~4.8M |
-| **Proof Time** | ~11s |
-| **Verify Time** | <1ms |
+| **Constraints** | 4,800,184 |
+| **Proof Time** | ~11.0s |
 
 ## Security Features
 
@@ -89,6 +88,8 @@ This implementation uses **Poseidon2** with a workaround for BN254 support in gn
 2. **Handler masking**: Inactive handlers are skipped using mask multiplication
 3. **GROUP BY validation**: SUM_BY fails if any row doesn't match a public group key
 4. **Result verification**: Computed results must match public input results
+5. **StartIndex Support**: `HandlerStartIndex` allows processing subsets of columns per handler
+
 
 ## License
 

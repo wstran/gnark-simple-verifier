@@ -48,6 +48,28 @@ func ColumnMask(api frontend.API, NC frontend.Variable, maxCols int) []frontend.
 	return mask
 }
 
+// ColumnMaskWithStart creates mask for valid columns with start offset
+// mask[col] = 1 if startIndex <= col < startIndex + NC, else 0
+// Port of circom ColumnMaskWithStart template
+func ColumnMaskWithStart(api frontend.API, startIndex, NC frontend.Variable, maxCols int) []frontend.Variable {
+	mask := make([]frontend.Variable, maxCols)
+
+	for i := 0; i < maxCols; i++ {
+		// Check: col >= startIndex (startIndex < col + 1)
+		geStart := LessThan(api, startIndex, frontend.Variable(i+1), 8)
+
+		// Check: col < startIndex + NC
+		endIndex := api.Add(startIndex, NC)
+
+		ltEnd := LessThan(api, frontend.Variable(i), endIndex, 8)
+
+		// Both conditions must be true
+		mask[i] = api.Mul(geStart, ltEnd)
+	}
+
+	return mask
+}
+
 // MaskedSum sums array values with mask
 // Only sums where mask[i] == 1
 // Port of circom MaskedSum template
