@@ -1,0 +1,54 @@
+# Go binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+gnark-simple-verifier
+simple-verifier-gnark
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build outputs
+build/
+dist/
+
+# Temporary files
+tmp/
+*.tmp
+*.log
+
+# Node.js (if any scripts used)
+node_modules/
+package-lock.json
+
+# Benchmark outputs (keep BENCHMARK_REPORT.md but ignore others)
+benchmark/*.json
+benchmark/*.bin
+
+# Circuit artifacts (generated during compilation)
+*.r1cs
+*.pk
+*.vk
+*.wtns
+*.zkey
+*.proof
+*.public
+
+# Go debug
+__debug_bin*
