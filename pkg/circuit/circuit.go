@@ -31,8 +31,8 @@ type SimpleVerifierCircuit struct {
 	// OpArgs: [colX, colY] per op [handler][op][2]
 	OpArgs [lib.MAX_HANDLERS][lib.MAX_OPS][2]frontend.Variable `gnark:",public"`
 
-	// Results: expected results [handler][op]
-	Results [lib.MAX_HANDLERS][lib.MAX_OPS]frontend.Variable `gnark:",public"`
+	// Results: expected results [handler][op][group]
+	Results [lib.MAX_HANDLERS][lib.MAX_OPS][lib.MAX_GROUPS]frontend.Variable `gnark:",public"`
 
 	// GroupKeys: PUBLIC group keys [handler][op][group]
 	GroupKeys [lib.MAX_HANDLERS][lib.MAX_OPS][lib.MAX_GROUPS]frontend.Variable `gnark:",public"`
@@ -141,7 +141,7 @@ func (c *SimpleVerifierCircuit) Define(api frontend.API) error {
 
 			api.AssertIsEqual(opValidationTerm, 0)
 
-			// Result multiplexing
+			// Result multiplexing (scalar ops go to index 0)
 			resultNoop := frontend.Variable(0)
 
 			resultMerkle := api.Mul(merkleRoots[h], isMerkle)
@@ -150,20 +150,31 @@ func (c *SimpleVerifierCircuit) Define(api frontend.API) error {
 
 			resultSum := api.Mul(sumResults[h][op], isSum)
 
-			resultSumBy := api.Mul(sumByResults[h][op].SSZRoot, isSumBy)
+			// Per-group comparison for SUM_BY, slot 0 for other ops
+			for g := 0; g < lib.MAX_GROUPS; g++ {
+				resultSumByG := api.Mul(sumByResults[h][op].GroupSums[g], isSumBy)
 
-			computedResult := api.Add(
-				api.Add(
-					api.Add(api.Add(resultNoop, resultMerkle), resultCount),
-					resultSum,
-				),
-				resultSumBy,
-			)
+				var computedResult frontend.Variable
 
-			// Verify: (computed - expected) * handlerMask === 0
-			resultDiff := api.Mul(api.Sub(computedResult, c.Results[h][op]), handlerMask[h])
+				if g == 0 {
+					// Slot 0: scalar ops OR first group of SUM_BY
+					computedResult = api.Add(
+						api.Add(
+							api.Add(api.Add(resultNoop, resultMerkle), resultCount),
+							resultSum,
+						),
+						resultSumByG,
+					)
+				} else {
+					// Slot 1+: only SUM_BY has values
+					computedResult = resultSumByG
+				}
 
-			api.AssertIsEqual(resultDiff, 0)
+				// Verify: (computed - expected) * handlerMask === 0
+				resultDiff := api.Mul(api.Sub(computedResult, c.Results[h][op][g]), handlerMask[h])
+
+				api.AssertIsEqual(resultDiff, 0)
+			}
 		}
 	}
 

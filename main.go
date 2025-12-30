@@ -340,13 +340,26 @@ func generateTestAssignment() (*circuit.SimpleVerifierCircuit, error) {
 		}
 	}
 
-	assignment.Results[0][0] = h0MerkleRoot
+	// Handler 0 Results: MERKLE, COUNT, NOOP, NOOP (scalar ops - value in [0], rest zeros)
+	for g := 0; g < lib.MAX_GROUPS; g++ {
+		if g == 0 {
+			assignment.Results[0][0][g] = h0MerkleRoot
 
-	assignment.Results[0][1] = big.NewInt(int64(TEST_NR))
+			assignment.Results[0][1][g] = big.NewInt(int64(TEST_NR))
 
-	assignment.Results[0][2] = big.NewInt(0)
+			assignment.Results[0][2][g] = big.NewInt(0)
 
-	assignment.Results[0][3] = big.NewInt(0)
+			assignment.Results[0][3][g] = big.NewInt(0)
+		} else {
+			assignment.Results[0][0][g] = big.NewInt(0)
+
+			assignment.Results[0][1][g] = big.NewInt(0)
+
+			assignment.Results[0][2][g] = big.NewInt(0)
+
+			assignment.Results[0][3][g] = big.NewInt(0)
+		}
+	}
 
 	assignment.HandlerNCs[1] = big.NewInt(int64(h1NC))
 
@@ -386,13 +399,22 @@ func generateTestAssignment() (*circuit.SimpleVerifierCircuit, error) {
 		}
 	}
 
-	assignment.Results[1][0] = h1Sum
+	// Handler 1 Results: SUM (scalar), SUM_BY (array of groupSums), NOOP, NOOP
+	for g := 0; g < lib.MAX_GROUPS; g++ {
+		if g == 0 {
+			assignment.Results[1][0][g] = h1Sum
+		} else {
+			assignment.Results[1][0][g] = big.NewInt(0)
+		}
 
-	assignment.Results[1][1] = h1SumBySSZ
+		// SUM_BY: actual group sums (not SSZ hash)
+		assignment.Results[1][1][g] = groupSums[g]
 
-	assignment.Results[1][2] = big.NewInt(0)
+		// NOOP slots
+		assignment.Results[1][2][g] = big.NewInt(0)
 
-	assignment.Results[1][3] = big.NewInt(0)
+		assignment.Results[1][3][g] = big.NewInt(0)
+	}
 
 	for h := 2; h < lib.MAX_HANDLERS; h++ {
 		assignment.HandlerNCs[h] = big.NewInt(1)
@@ -404,11 +426,11 @@ func generateTestAssignment() (*circuit.SimpleVerifierCircuit, error) {
 
 			assignment.OpArgs[h][op] = [2]frontend.Variable{big.NewInt(0), big.NewInt(0)}
 
-			assignment.Results[h][op] = big.NewInt(0)
-
 			assignment.NumGroups[h][op] = big.NewInt(0)
 
 			for g := 0; g < lib.MAX_GROUPS; g++ {
+				assignment.Results[h][op][g] = big.NewInt(0)
+
 				assignment.GroupKeys[h][op][g] = big.NewInt(0)
 			}
 		}

@@ -17,8 +17,8 @@
 
 | Metric | Value |
 |:---|:---|
-| **Constraints** | 4800184 |
-| **Compile** | 7.710164708s |
-| **Witness** | 1.147083ms |
-| **Setup** | 2m33.650551292s |
-| **Proof** | 11.019105375s |
+| **Constraints** | 4426200 |
+| **Compile** | 6.913997042s |
+| **Witness** | 1.222917ms |
+| **Setup** | 2m29.872514625s |
+| **Proof** | 10.185417042s |

@@ -8,7 +8,7 @@ This circuit implements a multi-handler verifier that supports:
 - **MERKLE16_ORDERED**: 16-ary Merkle tree root computation with mask
 - **COUNT**: Count valid rows
 - **SUM_COL**: Sum a specific column with row mask
-- **SUM_COL_BY**: Sum column X grouped by column Y with SSZ encoding
+- **SUM_COL_BY**: Sum column X grouped by column Y (returns array of groupSums)
 
 ## Project Structure
 
@@ -79,8 +79,8 @@ This implementation uses **Poseidon2** with a workaround for BN254 support in gn
 
 | Metric | Value |
 |:---|:---|
-| **Constraints** | 4,800,184 |
-| **Proof Time** | ~11.0s |
+| **Constraints** | 4,426,200 |
+| **Proof Time** | ~10.2s |
 
 ## Security Features
 

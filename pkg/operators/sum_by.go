@@ -9,7 +9,6 @@ import (
 // SumColumnByGroupResult holds the outputs of SumColumnByGroup
 type SumColumnByGroupResult struct {
 	GroupSums [lib.MAX_GROUPS]frontend.Variable
-	SSZRoot   frontend.Variable
 }
 
 // SumColumnByGroup sums column X grouped by column Y
@@ -92,25 +91,12 @@ func SumColumnByGroup(
 		api.AssertIsEqual(validationTerm, 0)
 	}
 
-	// Build result
+	// Build result (only GroupSums, no SSZ encoding)
 	var result SumColumnByGroupResult
 
 	for g := 0; g < lib.MAX_GROUPS; g++ {
 		result.GroupSums[g] = groupSumAccum[g]
 	}
-
-	// SSZ encode the key-value pairs
-	keysSlice := make([]frontend.Variable, lib.MAX_GROUPS)
-
-	valuesSlice := make([]frontend.Variable, lib.MAX_GROUPS)
-
-	for g := 0; g < lib.MAX_GROUPS; g++ {
-		keysSlice[g] = groupKeys[g]
-
-		valuesSlice[g] = result.GroupSums[g]
-	}
-
-	result.SSZRoot = lib.SSZKeyValue(api, keysSlice, valuesSlice)
 
 	return result
 }
